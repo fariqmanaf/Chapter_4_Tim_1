@@ -4,5 +4,6 @@ const carsRouter = require("./cars.route");
 const router = express.Router();
 
 router.use("/cars", carsRouter);
+router.use("/models", modelsRouter);
 
 module.exports = router;
