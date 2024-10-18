@@ -1,0 +1,36 @@
+const { PrismaClient } = require("@prisma/client");
+const prisma = new PrismaClient();
+
+const createOptionsRepo = async (option_details_id, cars_id) => {
+  const newOptions = await prisma.specs.create({
+    data: {
+      option_details_id,
+      cars_id,
+    },
+  });
+  const serializedOptions = JSONBigInt.stringify(newOptions);
+  return JSONBigInt.parse(serializedOptions);
+};
+
+const updateOptionsRepo = async (id, data) => {
+  const updatedOptions = await prisma.options.update({
+    where: { id },
+    data,
+  });
+  const serializedOptions = JSONBigInt.stringify(updatedOptions);
+  return JSONBigInt.parse(serializedOptions);
+};
+
+const deleteOptionsRepo = async (id) => {
+  const deleteOptions = await prisma.options.delete({
+    where: { id },
+  });
+  const serializedOptions = JSONBigInt.stringify(deleteOptions);
+  return JSONBigInt.parse(serializedOptions);
+};
+
+module.exports = {
+  createOptionsRepo,
+  updateOptionsRepo,
+  deleteOptionsRepo,
+};
