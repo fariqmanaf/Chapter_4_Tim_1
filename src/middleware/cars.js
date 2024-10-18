@@ -34,12 +34,15 @@ const validateCreateCar = async (req, res, next) => {
     rentPerDay: parseInt(req.body.rentPerDay),
     capacity: parseInt(req.body.capacity),
     available: req.body.available == "true" ? true : false,
-    year: parseInt(req.body.year)
+    year: parseInt(req.body.year),
+    manufacture_id : parseInt(req.body.manufacture_id),
+    option_details_id : req.body.option_details_id.map((id) => parseInt(id)),
+    spec_details_id : req.body.spec_details_id.map((id) => parseInt(id)),
   };
 
   const validateBody = z.object({
     plate: z.string(),
-    manufacture_id: z.string(),
+    manufacture_id: z.number(),
     model: z.string(),
     rentPerDay: z.number().positive(),
     capacity: z.number().int().positive(),
@@ -51,8 +54,8 @@ const validateCreateCar = async (req, res, next) => {
     available: z.boolean(),
     type: z.string(),
     year: z.number().int().positive(),
-    options: z.array(z.string()).nonempty(),
-    specs: z.array(z.string()).nonempty(),
+    option_details_id: z.array(z.number().positive()),
+    spec_details_id: z.array(z.number().positive()),
   });
 
   const validateFileBody = z

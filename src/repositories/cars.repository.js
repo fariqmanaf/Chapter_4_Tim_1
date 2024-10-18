@@ -24,16 +24,16 @@ const getCarsRepo = async (manufacture) => {
   return JSONBigInt.parse(serializedCars);
 };
 
-const getCarByIdRepo = (id) => {
+const getCarByIdRepo = async (id) => {
   const car = cars.find((car) => car.id == id);
   return car;
 };
 
-const createCarRepo = (car) => {
+const createCarRepo = async (car) => {
   
 };
 
-const updateCarRepo = (id, car) => {
+const updateCarRepo = async (id, car) => {
   const findIndex = cars.findIndex((car) => car.id == id);
   if (findIndex !== -1) {
     cars.splice(findIndex, 1, {
@@ -49,7 +49,7 @@ const updateCarRepo = (id, car) => {
   return cars[findIndex];
 };
 
-const deleteCarRepo = (id) => {
+const deleteCarRepo = async (id) => {
   const findIndex = cars.findIndex((car) => car.id == id);
   if (findIndex < 0) {
     return null;
