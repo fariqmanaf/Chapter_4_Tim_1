@@ -1,5 +1,6 @@
 const express = require("express");
 const carsRouter = require("./cars.route");
+const modelsRouter = require("./models");
 const availabilityRouter = require("./availability.route");
 
 const router = express.Router();

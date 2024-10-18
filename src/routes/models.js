@@ -1,10 +1,31 @@
 const express = require("express");
 
-const { validateCreateModel } = require("../middleware/models");
-const { createModel } = require("../controllers/models");
+const {
+  validateGetModels,
+  validateGetModelById,
+  validateCreateModel,
+  validateUpdateModel,
+  validateDeleteModelById,
+} = require("../middleware/models");
+const {
+  getModels,
+  getModelById,
+  createModel,
+  updateModel,
+  deleteModelById,
+} = require("../controllers/models");
 
 const router = express.Router();
 
-router.route("/").post(validateCreateModel, createModel);
+router
+  .route("/")
+  .get(validateGetModels, getModels)
+  .post(validateCreateModel, createModel);
+
+router
+  .route("/:id")
+  .get(validateGetModelById, getModelById)
+  .put(validateUpdateModel, updateModel)
+  .delete(validateDeleteModelById, deleteModelById);
 
 module.exports = router;
