@@ -1,6 +1,6 @@
 const express = require("express");
 const carsRouter = require("./cars.route");
-const modelsRouter = require("./models");
+const manufacturesRouter = require("./manufacture.route");
 const availabilityRouter = require("./availability.route");
 const optionsRouter = require("./options.route");
 
@@ -10,5 +10,6 @@ router.use("/cars", carsRouter);
 router.use("/availability", availabilityRouter);
 router.use("/models", modelsRouter);
 router.use("/options", optionsRouter);
+router.use("/manufactures", manufacturesRouter);
 
 module.exports = router;
