@@ -3,23 +3,47 @@ const JSONBigInt = require("json-bigint");
 
 const prisma = new PrismaClient();
 
-const getCarsRepo = async (manufacture) => {
-  const searchedCars = await prisma.cars.findMany({
-    where: manufacture ? { manufactures: { name: manufacture } } : undefined,
+const getCarsRepo = async (manufactureName, modelName) => {
+  // Define query here
+  let query = {
     include: {
       manufactures: true,
       models: true,
       availability: true,
       car_details: true,
       options: {
-        include: { option_details: true },
+        include: {
+          option_details: true,
+        },
       },
       specs: {
-        include: { spec_details: true },
+        include: {
+          spec_details: true,
+        },
       },
     },
-  });
+  };
 
+  let andQuery = [];
+  if (manufactureName) {
+    andQuery.push({
+      manufactures: {
+        name: { contains: manufactureName, mode: "insensitive" },
+      },
+    });
+  }
+  if (modelName) {
+    andQuery.push({
+      models: { model: { contains: modelName, mode: "insensitive" } },
+    });
+  }
+  if (andQuery.length > 0) {
+    query.where = {
+      ...query.where,
+      AND: andQuery,
+    };
+  }
+  const searchedCars = await prisma.cars.findMany(query);
   const serializedCars = JSONBigInt.stringify(searchedCars);
   return JSONBigInt.parse(serializedCars);
 };
