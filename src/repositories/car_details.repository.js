@@ -2,7 +2,6 @@ const { PrismaClient } = require("@prisma/client");
 const JSONBigInt = require("json-bigint");
 
 const prisma = new PrismaClient();
-const JSONBigInt = require("json-bigint");
 
 const createCarDetailsRepo = async (
   capacity,
@@ -29,17 +28,20 @@ const createCarDetailsRepo = async (
 };
 
 const updateCarDetailsRepo = async (
-  id,
   capacity,
   transmission,
   plate,
   year,
   description,
   image,
-  cars_id
+  car_id
 ) => {
+  const carDetails = await prisma.car_details.findFirst({
+    where: { cars_id: car_id },
+  });
+
   const updatedCarDetails = await prisma.car_details.update({
-    where: { id },
+    where: { id: carDetails.id },
     data: {
       capacity,
       transmission,
@@ -47,7 +49,6 @@ const updateCarDetailsRepo = async (
       year,
       image,
       description,
-      cars_id,
     },
   });
   const serializedCarDetails = JSONBigInt.stringify(updatedCarDetails);
@@ -55,8 +56,8 @@ const updateCarDetailsRepo = async (
 };
 
 const deleteCarDetailsRepo = async (id) => {
-  const deleteCarDetails = await prisma.car_details.delete({
-    where: { id },
+  const deleteCarDetails = await prisma.car_details.deleteMany({
+    where: { cars_id: id },
   });
   const serializedCarDetails = JSONBigInt.stringify(deleteCarDetails);
   return JSONBigInt.parse(serializedCarDetails);
