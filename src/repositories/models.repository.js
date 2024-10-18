@@ -16,7 +16,7 @@ exports.createModelsRepo = async (model, type) => {
   return JSONBigInt.parse(serializedModels);
 };
 
-exports.updateModels = async (id, data) => {
+exports.updateModelsRepo = async (id, data) => {
   const updatedModels = await prisma.models.update({
     where: { id },
     data,
@@ -27,7 +27,7 @@ exports.updateModels = async (id, data) => {
   return JSONBigInt.parse(serializedModels);
 };
 
-exports.deleteModelsById = async (id) => {
+exports.deleteModelsRepo = async (id) => {
   const deletedModels = await prisma.models.delete({
     where: { id },
   });
