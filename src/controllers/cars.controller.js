@@ -8,10 +8,9 @@ const {
 } = require("../services/cars.service.js");
 
 const getCarsController = async (req, res) => {
-  const {manufacture, model} = req.query;
+  const { manufacture } = req.query;
 
-  const data = await getCarsService( manufacture, model
-  );
+  const data = await getCarsService(manufacture);
   successResponse(res, data);
 };
 
