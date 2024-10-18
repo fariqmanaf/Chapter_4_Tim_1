@@ -1,4 +1,5 @@
 const { PrismaClient } = require("@prisma/client");
+const JSONBigInt = require("json-bigint");
 const prisma = new PrismaClient();
 
 const createOptionsRepo = async (option_details_id, cars_id) => {
