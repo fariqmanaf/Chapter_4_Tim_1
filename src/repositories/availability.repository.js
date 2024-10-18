@@ -20,7 +20,7 @@ const updateAvailabilityRepo = async (id, data) => {
     where: { id },
     data,
   });
-  const serializedAvailabilitys = JSONBigInt.stringify(updatedAvailabilitys);
+  const serializedAvailabilitys = JSONBigInt.stringify(updatedAvailability);
   return JSONBigInt.parse(serializedAvailabilitys);
 };
 
@@ -28,7 +28,7 @@ const deleteAvailabilityRepo = async (id) => {
   const deletedAvailability = await prisma.availability.delete({
     where: { id },
   });
-  const serializedAvailabilitys = JSONBigInt.stringify(deletedAvailabilitys);
+  const serializedAvailabilitys = JSONBigInt.stringify(deletedAvailability);
   return JSONBigInt.parse(serializedAvailabilitys);
 };
 
