@@ -9,11 +9,7 @@ const { BadRequestError, NotFoundError } = require("../utils/request.js");
 const { imageUpload } = require("../utils/imageHandler.js");
 
 const getCarsService = async (manufacture, model) => {
-  const data = await getCarsRepo(manufacture, model);
-  if (data.length === 0) {
-    throw new NotFoundError("Car not found");
-  }
-  return data;
+  return getCarsRepo(manufacture, model);
 };
 
 const getCarByIdService = async (id) => {
@@ -49,7 +45,7 @@ const updateCarService = async (id, car, files) => {
     files = { image: null };
   }
 
-  if(files.image == null) {
+  if (files.image == null) {
     car.image = existingCar.image;
   } else {
     car.image = await imageUpload(files.image);
