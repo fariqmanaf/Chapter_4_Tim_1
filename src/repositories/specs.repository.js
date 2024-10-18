@@ -8,7 +8,8 @@ const createSpecsRepo = async (spec_details_id, car_id) => {
       car_id,
     },
   });
-  return newSpec;
+  const serializedSpecs = JSONBigInt.stringify(newSpec);
+  return JSONBigInt.parse(serializedSpecs);
 };
 
 const updateSpecsRepo = async (id, data) => {
@@ -23,7 +24,8 @@ const deleteSpecsRepo = async (id) => {
   const deletedSpec = await prisma.specs.delete({
     where: { id },
   });
-  return deletedSpec;
+  const serializedSpecs = JSONBigInt.stringify(deletedSpecs);
+  return JSONBigInt.parse(serializedSpecs);
 };
 
 module.exports = {

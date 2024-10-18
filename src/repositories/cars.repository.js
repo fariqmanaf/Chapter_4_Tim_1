@@ -1,8 +1,5 @@
 const { PrismaClient } = require("@prisma/client");
 const JSONBigInt = require("json-bigint");
-const { BadRequestError, NotFoundError } = require("../utils/request.js");
-const { imageUpload } = require("../utils/imageHandler.js");
-const e = require("express");
 
 const prisma = new PrismaClient();
 
@@ -59,7 +56,8 @@ const createCarRepo = async (manufacture_id, model_id, availability_id) => {
       availability_id,
     },
   });
-  return newCar;
+  const serializedCars = JSONBigInt.stringify(newCar);
+  return JSONBigInt.parse(serializedCars);
 };
 
 const updateCarRepo = async (id, data) => {
@@ -67,14 +65,16 @@ const updateCarRepo = async (id, data) => {
     where: { id },
     data,
   });
-  return updatedCar;
+  const serializedCars = JSONBigInt.stringify(updatedCar);
+  return JSONBigInt.parse(serializedCars);;
 };
 
 const deleteCarRepo = async (id) => {
   const deletedCar = await prisma.cars.delete({
     where: { id },
   });
-  return deletedCar;
+  const serializedCars = JSONBigInt.stringify(deletedCar);
+  return JSONBigInt.parse(serializedCars);
 };
 
 module.exports = {
