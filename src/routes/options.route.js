@@ -28,5 +28,4 @@ router
   .put(validateUpdateOption, updateOptionController)
   .delete(validateDeleteOption, deleteOptionController);
 
-
 module.exports = router;
