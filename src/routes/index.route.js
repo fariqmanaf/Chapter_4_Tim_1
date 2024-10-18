@@ -8,7 +8,6 @@ const router = express.Router();
 
 router.use("/cars", carsRouter);
 router.use("/availability", availabilityRouter);
-router.use("/models", modelsRouter);
 router.use("/options", optionsRouter);
 router.use("/manufactures", manufacturesRouter);
 
