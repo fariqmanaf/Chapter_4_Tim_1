@@ -1,10 +1,12 @@
 const { PrismaClient } = require("@prisma/client");
 const JSONBigInt = require("json-bigint");
+const { BadRequestError, NotFoundError } = require("../utils/request.js");
+const { imageUpload } = require("../utils/imageHandler.js");
+const e = require("express");
 
 const prisma = new PrismaClient();
 
-const getCarsRepo = async (manufactureName, modelName) => {
-  // Define query here
+const getCarsRepo = async (manufacture) => {
   let query = {
     include: {
       manufactures: true,
@@ -24,23 +26,14 @@ const getCarsRepo = async (manufactureName, modelName) => {
     },
   };
 
-  let andQuery = [];
-  if (manufactureName) {
-    andQuery.push({
-      manufactures: {
-        name: { contains: manufactureName, mode: "insensitive" },
-      },
-    });
-  }
-  if (modelName) {
-    andQuery.push({
-      models: { model: { contains: modelName, mode: "insensitive" } },
-    });
-  }
-  if (andQuery.length > 0) {
+  if (manufacture) {
     query.where = {
-      ...query.where,
-      AND: andQuery,
+      manufactures: {
+        name: {
+          contains: manufacture,
+          mode: "insensitive", 
+        },
+      },
     };
   }
   const searchedCars = await prisma.cars.findMany(query);
@@ -49,38 +42,38 @@ const getCarsRepo = async (manufactureName, modelName) => {
 };
 
 const getCarByIdRepo = async (id) => {
-  const car = cars.find((car) => car.id == id);
-  return car;
+  const cars = await prisma.cars.findFirst({
+    where: {
+      id: id,
+    }
+  });
+  const serializedCars = JSONBigInt.stringify(cars);
+  return JSONBigInt.parse(serializedCars);
 };
 
-const createCarRepo = async (car) => {
-  
+const createCarRepo = async (manufacture_id, model_id, availability_id) => {
+  const newCar = await prisma.cars.create({
+    data: {
+      manufacture_id,
+      model_id,
+      availability_id,
+    },
+  });
+  return newCar;
 };
 
-const updateCarRepo = async (id, car) => {
-  const findIndex = cars.findIndex((car) => car.id == id);
-  if (findIndex !== -1) {
-    cars.splice(findIndex, 1, {
-      ...cars[findIndex],
-      ...car,
-    });
-  } else {
-    throw new NotFoundError("Car not found");
-  }
-
-  fs.writeFileSync("./data/cars.json", JSON.stringify(cars, null, 4));
-
-  return cars[findIndex];
+const updateCarRepo = async (id, data) => {
+  const updatedCar = await prisma.cars.update({
+    where: { id },
+    data,
+  });
+  return updatedCar;
 };
 
 const deleteCarRepo = async (id) => {
-  const findIndex = cars.findIndex((car) => car.id == id);
-  if (findIndex < 0) {
-    return null;
-  }
-
-  const deletedCar = cars.splice(findIndex, 1);
-  fs.writeFileSync("./data/cars.json", JSON.stringify(cars, null, 4));
+  const deletedCar = await prisma.cars.delete({
+    where: { id },
+  });
   return deletedCar;
 };
 

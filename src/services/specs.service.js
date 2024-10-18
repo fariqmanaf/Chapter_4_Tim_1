@@ -4,7 +4,7 @@ const {
   createSpecsRepo,
   updateSpecsRepo,
   deleteSpecsRepo,
-} = require("../repositories/specs.repository.js");
+} = require("../repositories/spec_details.repository.js");
 const { BadRequestError, NotFoundError } = require("../utils/request.js");
 
 const getSpecsService = async (spec) => {

@@ -1,70 +1,32 @@
 const { PrismaClient } = require("@prisma/client");
-const JSONBigInt = require("json-bigint");
-
 const prisma = new PrismaClient();
 
-const getSpecsRepo = async (spec) => {
-  const filters = {};
-
-  if (spec) {
-    filters.spec = {
-      contains: spec,
-      mode: "insensitive",
-    };
-  }
-
-  const searchedSpec = await prisma.spec_details.findMany({
-    where: filters,
-  });
-
-  // Convert BigInt fields to string for safe serialization
-  const serializedSpecs = JSONBigInt.stringify(searchedSpec);
-  return JSONBigInt.parse(serializedSpecs);
-};
-
-const getSpecsByIdRepo = async (id) => {
-  const specs = await prisma.spec_details.findFirst({
-    where: {
-      id: id,
-    },
-  });
-  const serializedSpecs = JSONBigInt.stringify(specs);
-  return JSONBigInt.parse(serializedSpecs);
-};
-
-const createSpecsRepo = async (spec) => {
-  const newSpec = await prisma.spec_details.create({
+const createSpecsRepo = async (spec_details_id, car_id) => {
+  const newSpec = await prisma.specs.create({
     data: {
-      spec,
+      spec_details_id,
+      car_id,
     },
   });
-
-  const serializedSpecs = JSONBigInt.stringify(newSpec);
-  return JSONBigInt.parse(serializedSpecs);
+  return newSpec;
 };
 
-const updateSpecsRepo = async (id, spec) => {
-  const updatedSpecs = await prisma.spec_details.update({
+const updateSpecsRepo = async (id, data) => {
+  const updatedSpec = await prisma.specs.update({
     where: { id },
-    data: {spec,},
+    data,
   });
-
-  const serializedSpecs = JSONBigInt.stringify(updatedSpecs);
-  return JSONBigInt.parse(serializedSpecs);
+  return updatedSpec;
 };
 
 const deleteSpecsRepo = async (id) => {
-  const deletedSpecs = await prisma.spec_details.delete({
+  const deletedSpec = await prisma.specs.delete({
     where: { id },
   });
-
-  const serializedSpecs = JSONBigInt.stringify(deletedSpecs);
-  return JSONBigInt.parse(serializedSpecs);
+  return deletedSpec;
 };
 
 module.exports = {
-  getSpecsRepo,
-  getSpecsByIdRepo,
   createSpecsRepo,
   updateSpecsRepo,
   deleteSpecsRepo,
