@@ -1,11 +1,10 @@
 const { z } = require("zod");
 const { BadRequestError } = require("../utils/request");
 
-exports.validateGetModels = (req, res, next) => {
+exports.validateGetManufactures = (req, res, next) => {
   // Validate the query
   const validateQuery = z.object({
-    model: z.string().optional().nullable(),
-    type: z.string().optional().nullable(),
+    name: z.string().optional().nullable(),
   });
 
   const resultValidateQuery = validateQuery.safeParse(req.query);
@@ -16,7 +15,7 @@ exports.validateGetModels = (req, res, next) => {
   next();
 };
 
-exports.validateGetModelById = (req, res, next) => {
+exports.validateGetManufactureById = (req, res, next) => {
   // Make a validation schema
   const validateParams = z.object({
     id: z.string(),
@@ -31,10 +30,9 @@ exports.validateGetModelById = (req, res, next) => {
   next();
 };
 
-exports.validateCreateModel = async (req, res, next) => {
+exports.validateCreateManufacture = async (req, res, next) => {
   const validateBody = z.object({
-    model: z.string(),
-    type: z.string(),
+    name: z.string(),
   });
 
   const resultValidateBody = validateBody.safeParse(req.body);
@@ -45,7 +43,7 @@ exports.validateCreateModel = async (req, res, next) => {
   next();
 };
 
-exports.validateUpdateModel = (req, res, next) => {
+exports.validateUpdateManufacture = (req, res, next) => {
   // zod validation
   const validateParams = z.object({
     id: z.string(),
@@ -59,8 +57,7 @@ exports.validateUpdateModel = (req, res, next) => {
 
   // Validation body schema
   const validateBody = z.object({
-    model: z.string(),
-    type: z.string(),
+    name: z.string(),
   });
 
   // Validate
@@ -73,7 +70,7 @@ exports.validateUpdateModel = (req, res, next) => {
   next();
 };
 
-exports.validateDeleteModelById = (req, res, next) => {
+exports.validateDeleteManufactureById = (req, res, next) => {
   // Make a validation schema
   const validateParams = z.object({
     id: z.string(),
