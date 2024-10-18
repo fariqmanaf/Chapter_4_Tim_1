@@ -15,11 +15,13 @@ const createAvailabilityRepo = async (rentPerDay, availableAt, available) => {
   return JSONBigInt.parse(serializedAvailabilitys);
 };
 
-const updateAvailabilityRepo = async (id, data) => {
+const updateAvailabilityRepo = async (id, rentPerDay, availableAt, available) => {
   const updatedAvailability = await prisma.availability.update({
     where: { id },
-    data : {
-      
+    data: {
+      rentPerDay,
+      availableAt,
+      available,
     },
   });
   const serializedAvailabilitys = JSONBigInt.stringify(updatedAvailability);
