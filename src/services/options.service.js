@@ -4,7 +4,7 @@ const {
   createOptionRepo,
   updateOptionRepo,
   deleteOptionRepo,
-} = require("../repositories/options.repository.js");
+} = require("../repositories/option_details.repository.js");
 const { BadRequestError, NotFoundError } = require("../utils/request.js");
 
 const getOptionsService = async (option) => {

@@ -1,3 +1,9 @@
+const { getCarsRepo, getCarByIdRepo, createCarRepo, updateCarRepo, deleteCarRepo,} = require("../repositories/cars.repository.js");
+const { createAvailabilityRepo, updateAvailabilityRepo, deleteAvailabilityRepo, } = require("../repositories/availability.repository.js");
+const {createSpecsRepo, updateSpecsRepo, deleteSpecsRepo,} = require("../repositories/specs.repository.js");
+// const { createCarDetailsRepo, updateCarDetailsRepo, deleteCarDetailsRepo,} = require("../repositories/car_details.repository.js");
+// const {createOptionsRepo, createOptionsRepo, createOptionsRepo,} = require("../repositories/options.repository.js");
+//const {createModelsRepo, updateModelsRepo, deleteModelsRepo,} = require("../repositories/models.repository.js");
 
 // TODO: import the required repositories
 
