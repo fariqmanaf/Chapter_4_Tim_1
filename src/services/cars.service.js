@@ -1,12 +1,39 @@
-const { getCarsRepo, getCarByIdRepo, createCarRepo, updateCarRepo, deleteCarRepo,} = require("../repositories/cars.repository.js");
-const { createAvailabilityRepo, updateAvailabilityRepo, deleteAvailabilityRepo, } = require("../repositories/availability.repository.js");
-const {createSpecsRepo, updateSpecsRepo, deleteSpecsRepo,} = require("../repositories/specs.repository.js");
-const { createCarDetailsRepo, updateCarDetailsRepo, deleteCarDetailsRepo,} = require("../repositories/car_details.repository.js");
-const {createOptionsRepo, updateOptionsRepo, deleteOptionsRepo,} = require("../repositories/options.repository.js");
-const {createModelsRepo, updateModelsRepo, deleteModelsRepo,} = require("../repositories/models.repository.js");
+const {
+  getCarsRepo,
+  getCarByIdRepo,
+  createCarRepo,
+  updateCarRepo,
+  deleteCarRepo,
+} = require("../repositories/cars.repository.js");
+const {
+  createAvailabilityRepo,
+  updateAvailabilityRepo,
+  deleteAvailabilityRepo,
+} = require("../repositories/availability.repository.js");
+const {
+  createSpecsRepo,
+  updateSpecsRepo,
+  deleteSpecsRepo,
+} = require("../repositories/specs.repository.js");
+const {
+  createCarDetailsRepo,
+  updateCarDetailsRepo,
+  deleteCarDetailsRepo,
+} = require("../repositories/car_details.repository.js");
+const {
+  createOptionsRepo,
+  updateOptionsRepo,
+  deleteOptionsRepo,
+} = require("../repositories/options.repository.js");
+const {
+  createModelsRepo,
+  updateModelsRepo,
+  deleteModelsRepo,
+} = require("../repositories/models.repository.js");
 
 const { BadRequestError, NotFoundError } = require("../utils/request.js");
 const { imageUpload } = require("../utils/imageHandler.js");
+const e = require("express");
 
 const getCarsService = async (manufacture) => {
   const data = await getCarsRepo(manufacture);
@@ -117,14 +144,20 @@ const updateCarService = async (id, car, files) => {
   } = car;
 
   const updateAvailabilityTable = await updateAvailabilityRepo(
+    existingCar.availability_id,
     rentPerDay,
     availableAt,
     available
   );
 
-  const updateModelsTable = await updateModelsRepo(model, type);
+  const updateModelsTable = await updateModelsRepo(
+    existingCar.model_id,
+    model,
+    type
+  );
 
   const updateCarTable = await updateCarRepo(
+    id,
     manufacture_id,
     updateModelsTable.id,
     updateAvailabilityTable.id
@@ -137,35 +170,34 @@ const updateCarService = async (id, car, files) => {
     year,
     description,
     image,
-    updateCarTable.id
+    id
   );
 
-  const updateOptionsTable = await updateOptionsRepo(
-    option_details_id,
-    updateCarTable.id
-  );
+  const updateOptionsTable = await updateOptionsRepo(option_details_id, id);
 
-  const updateSpecsTable = await updateSpecsRepo(
-    spec_details_id,
-    updateCarTable.id
-  );
+  const updateSpecsTable = await updateSpecsRepo(spec_details_id, id);
 
-  return updateCarTable;
+  return existingCar;
 };
 
 const deleteCarService = async (id) => {
   const existingCar = await getCarByIdRepo(id);
 
-  const deleteCarTable = await deleteCarRepo(existingCar.id);
-  const deleteAvailabilityTable = await deleteAvailabilityRepo(
-    existingCar.availability_id
-  );
-  const deleteModelsTable = await deleteModelsRepo(existingCar.model_id);
+  if (!existingCar) {
+    throw new NotFoundError("Car not found");
+  }
+
   const deleteCarDetailsTable = await deleteCarDetailsRepo(id);
   const deleteOptionsTable = await deleteOptionsRepo(id);
   const deleteSpecsTable = await deleteSpecsRepo(id);
 
-  return deleteCarTable;
+  const deleteAvailabilityTable = await deleteAvailabilityRepo(
+    existingCar.availability_id
+  );
+  const deleteModelsTable = await deleteModelsRepo(existingCar.model_id);
+  const deleteCarTable = await deleteCarRepo(existingCar.id);
+
+  return existingCar;
 };
 
 module.exports = {

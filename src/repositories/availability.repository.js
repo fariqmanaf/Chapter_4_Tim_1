@@ -15,12 +15,17 @@ const createAvailabilityRepo = async (rentPerDay, availableAt, available) => {
   return JSONBigInt.parse(serializedAvailabilitys);
 };
 
-const updateAvailabilityRepo = async (id, rentPerDay, availableAt, available) => {
+const updateAvailabilityRepo = async (
+  id,
+  rentPerDay,
+  availableAt,
+  available
+) => {
   const updatedAvailability = await prisma.availability.update({
     where: { id },
     data: {
-      rentPerDay,
-      availableAt,
+      rent_perday: rentPerDay,
+      available_at: availableAt,
       available,
     },
   });
@@ -29,6 +34,11 @@ const updateAvailabilityRepo = async (id, rentPerDay, availableAt, available) =>
 };
 
 const deleteAvailabilityRepo = async (id) => {
+  await prisma.cars.updateMany({
+    where: { availability_id: id },
+    data: { availability_id: null },
+  });
+
   const deletedAvailability = await prisma.availability.delete({
     where: { id },
   });
