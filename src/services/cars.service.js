@@ -1,15 +1,12 @@
 const { getCarsRepo, getCarByIdRepo, createCarRepo, updateCarRepo, deleteCarRepo,} = require("../repositories/cars.repository.js");
 const { createAvailabilityRepo, updateAvailabilityRepo, deleteAvailabilityRepo, } = require("../repositories/availability.repository.js");
 const {createSpecsRepo, updateSpecsRepo, deleteSpecsRepo,} = require("../repositories/specs.repository.js");
-// const { createCarDetailsRepo, updateCarDetailsRepo, deleteCarDetailsRepo,} = require("../repositories/car_details.repository.js");
-// const {createOptionsRepo, createOptionsRepo, createOptionsRepo,} = require("../repositories/options.repository.js");
-//const {createModelsRepo, updateModelsRepo, deleteModelsRepo,} = require("../repositories/models.repository.js");
-
-// TODO: import the required repositories
+const { createCarDetailsRepo, updateCarDetailsRepo, deleteCarDetailsRepo,} = require("../repositories/car_details.repository.js");
+const {createOptionsRepo, updateOptionsRepo, deleteOptionsRepo,} = require("../repositories/options.repository.js");
+const {createModelsRepo, updateModelsRepo, deleteModelsRepo,} = require("../repositories/models.repository.js");
 
 const { BadRequestError, NotFoundError } = require("../utils/request.js");
 const { imageUpload } = require("../utils/imageHandler.js");
-const e = require("express");
 
 const getCarsService = async (manufacture) => {
   const data = await getCarsRepo(manufacture);
@@ -85,7 +82,9 @@ const createCarService = async (car, files) => {
     createCarTable.id
   );
 
-  return createCarTable;
+  const newCar = await getCarByIdRepo(createCarTable.id);
+
+  return newCar;
 };
 
 const updateCarService = async (id, car, files) => {

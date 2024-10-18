@@ -1,12 +1,15 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+const JSONBigInt = require("json-bigint");
 
 const createOptionsRepo = async (option_details_id, cars_id) => {
-  const newOptions = await prisma.specs.create({
-    data: {
-      option_details_id,
-      cars_id,
-    },
+  const newOptions = option_details_id.map(async (id) => {
+    await prisma.options.create({
+      data: {
+        option_details_id: id,
+        cars_id,
+      },
+    });
   });
   const serializedOptions = JSONBigInt.stringify(newOptions);
   return JSONBigInt.parse(serializedOptions);
