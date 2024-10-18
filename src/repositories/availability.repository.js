@@ -1,4 +1,6 @@
 const { PrismaClient } = require("@prisma/client");
+const JSONBigInt = require("json-bigint");
+
 const prisma = new PrismaClient();
 
 const createAvailabilityRepo = async (rentPerDay, availableAt, available) => {
@@ -9,7 +11,8 @@ const createAvailabilityRepo = async (rentPerDay, availableAt, available) => {
       available: available,
     },
   });
-  return newAvailability;
+  const serializedAvailabilitys = JSONBigInt.stringify(newAvailability);
+  return JSONBigInt.parse(serializedAvailabilitys);
 };
 
 const updateAvailabilityRepo = async (id, data) => {
@@ -17,14 +20,16 @@ const updateAvailabilityRepo = async (id, data) => {
     where: { id },
     data,
   });
-  return updatedAvailability;
+  const serializedAvailabilitys = JSONBigInt.stringify(updatedAvailabilitys);
+  return JSONBigInt.parse(serializedAvailabilitys);
 };
 
 const deleteAvailabilityRepo = async (id) => {
   const deletedAvailability = await prisma.availability.delete({
     where: { id },
   });
-  return deletedAvailability;
+  const serializedAvailabilitys = JSONBigInt.stringify(deletedAvailabilitys);
+  return JSONBigInt.parse(serializedAvailabilitys);
 };
 
 module.exports = {
