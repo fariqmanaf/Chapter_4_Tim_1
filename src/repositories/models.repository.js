@@ -14,10 +14,13 @@ exports.createModelsRepo = async (model, type) => {
   return JSONBigInt.parse(serializedModels);
 };
 
-exports.updateModels = async (id, data) => {
+exports.updateModels = async (id, model, type) => {
   const updatedModels = await prisma.models.update({
     where: { id },
-    data,
+    data: {
+      model,
+      type,
+    },
   });
 
   // Convert BigInt fields to string for safe serialization
