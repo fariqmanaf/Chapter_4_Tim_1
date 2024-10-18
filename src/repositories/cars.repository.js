@@ -30,16 +30,7 @@ const getCarByIdRepo = (id) => {
 };
 
 const createCarRepo = (car) => {
-  const newCar = {
-    id: uuidv4(),
-    ...car,
-  };
-
-  cars.push(newCar);
-
-  fs.writeFileSync("./data/cars.json", JSON.stringify(cars, null, 4));
-
-  return newCar;
+  
 };
 
 const updateCarRepo = (id, car) => {

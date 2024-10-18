@@ -3,8 +3,7 @@ const { BadRequestError } = require("../utils/request");
 
 const validateGetCars = async (req, res, next) => {
   const validateQuery = z.object({
-    manufacture: z.string().optional(),
-    model: z.string().optional(),
+    manufacture: z.string().optional()
   });
 
   const resultValidateQuery = validateQuery.safeParse(req.query);
@@ -29,6 +28,7 @@ const validateGetCarById = async (req, res, next) => {
 };
 
 const validateCreateCar = async (req, res, next) => {
+  
   req.body = {
     ...req.body,
     rentPerDay: parseInt(req.body.rentPerDay),
@@ -39,7 +39,7 @@ const validateCreateCar = async (req, res, next) => {
 
   const validateBody = z.object({
     plate: z.string(),
-    manufacture: z.string(),
+    manufacture_id: z.string(),
     model: z.string(),
     rentPerDay: z.number().positive(),
     capacity: z.number().int().positive(),
