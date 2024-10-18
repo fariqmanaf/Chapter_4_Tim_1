@@ -28,18 +28,26 @@ const validateGetCarById = async (req, res, next) => {
 };
 
 const validateCreateCar = async (req, res, next) => {
-  
   req.body = {
     ...req.body,
     rentPerDay: parseInt(req.body.rentPerDay),
     capacity: parseInt(req.body.capacity),
     available: req.body.available == "true" ? true : false,
     year: parseInt(req.body.year),
-    manufacture_id : parseInt(req.body.manufacture_id),
-    option_details_id : req.body.option_details_id.map((id) => parseInt(id)),
-    spec_details_id : req.body.spec_details_id.map((id) => parseInt(id)),
+    manufacture_id: parseInt(req.body.manufacture_id),
+
+    // Ensure option_details_id is an array before mapping
+    option_details_id: Array.isArray(req.body.option_details_id)
+      ? req.body.option_details_id.map((id) => parseInt(id))
+      : [parseInt(req.body.option_details_id)],
+
+    // Ensure spec_details_id is an array before mapping
+    spec_details_id: Array.isArray(req.body.spec_details_id)
+      ? req.body.spec_details_id.map((id) => parseInt(id))
+      : [parseInt(req.body.spec_details_id)],
   };
 
+  // Body validation schema
   const validateBody = z.object({
     plate: z.string(),
     manufacture_id: z.number(),
@@ -58,6 +66,7 @@ const validateCreateCar = async (req, res, next) => {
     spec_details_id: z.array(z.number().positive()),
   });
 
+  // File validation schema (for image)
   const validateFileBody = z
     .object({
       image: z
@@ -71,18 +80,24 @@ const validateCreateCar = async (req, res, next) => {
     .nullable()
     .optional();
 
+  // Validate the body
   const resultValidateBody = validateBody.safeParse(req.body);
   if (!resultValidateBody.success) {
-    throw new BadRequestError(resultValidateBody.error.errors);
+    return res.status(400).json({ errors: resultValidateBody.error.errors });
   }
 
+  // Validate the files
   const resultValidateFileBody = validateFileBody.safeParse(req.files);
   if (!resultValidateFileBody.success) {
-    throw new BadRequestError(resultValidateFileBody.error.errors);
+    return res
+      .status(400)
+      .json({ errors: resultValidateFileBody.error.errors });
   }
 
+  // Proceed to the next middleware or controller
   next();
 };
+
 
 const validateUpdateCar = async (req, res, next) => {
   const validateParams = z.object({

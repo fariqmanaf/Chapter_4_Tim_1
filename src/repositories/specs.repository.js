@@ -1,4 +1,5 @@
 const { PrismaClient } = require("@prisma/client");
+const JSONBigInt = require("json-bigint");
 const prisma = new PrismaClient();
 const JSONBigInt = require("json-bigint");
 
@@ -15,10 +16,13 @@ const createSpecsRepo = async (spec_details_id, cars_id) => {
   return JSONBigInt.parse(serializedSpecs);
 };
 
-const updateSpecsRepo = async (id, data) => {
+const updateSpecsRepo = async (id, spec_details_id, updateCarTable) => {
   const updatedSpec = await prisma.specs.update({
     where: { id },
-    data,
+    data : { 
+      spec_details_id,
+      updateCarTable,
+    }
   });
   return updatedSpec;
 };
@@ -27,7 +31,7 @@ const deleteSpecsRepo = async (id) => {
   const deletedSpec = await prisma.specs.delete({
     where: { id },
   });
-  const serializedSpecs = JSONBigInt.stringify(deletedSpecs);
+  const serializedSpecs = JSONBigInt.stringify(deletedSpec);
   return JSONBigInt.parse(serializedSpecs);
 };
 
