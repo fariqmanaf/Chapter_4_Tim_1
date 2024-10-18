@@ -28,7 +28,7 @@ const getCarsRepo = async (manufacture) => {
       manufactures: {
         name: {
           contains: manufacture,
-          mode: "insensitive", 
+          mode: "insensitive",
         },
       },
     };
@@ -42,7 +42,23 @@ const getCarByIdRepo = async (id) => {
   const cars = await prisma.cars.findFirst({
     where: {
       id: id,
-    }
+    },
+    include: {
+      manufactures: true,
+      models: true,
+      availability: true,
+      car_details: true,
+      options: {
+        include: {
+          option_details: true,
+        },
+      },
+      specs: {
+        include: {
+          spec_details: true,
+        },
+      },
+    },
   });
   const serializedCars = JSONBigInt.stringify(cars);
   return JSONBigInt.parse(serializedCars);
@@ -66,7 +82,7 @@ const updateCarRepo = async (id, data) => {
     data,
   });
   const serializedCars = JSONBigInt.stringify(updatedCar);
-  return JSONBigInt.parse(serializedCars);;
+  return JSONBigInt.parse(serializedCars);
 };
 
 const deleteCarRepo = async (id) => {

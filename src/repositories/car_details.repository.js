@@ -2,6 +2,7 @@ const { PrismaClient } = require("@prisma/client");
 const JSONBigInt = require("json-bigint");
 
 const prisma = new PrismaClient();
+const JSONBigInt = require("json-bigint");
 
 const createCarDetailsRepo = async (
   capacity,

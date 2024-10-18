@@ -4,12 +4,14 @@ const {createSpecsRepo, updateSpecsRepo, deleteSpecsRepo,} = require("../reposit
 const { createCarDetailsRepo, updateCarDetailsRepo, deleteCarDetailsRepo,} = require("../repositories/car_details.repository.js");
 const {createOptionsRepo, updateOptionsRepo, deleteOptionsRepo,} = require("../repositories/options.repository.js");
 const {createModelsRepo, updateModelsRepo, deleteModelsRepo,} = require("../repositories/models.repository.js");
+<<<<<<< HEAD
 
 // TODO: import the required repositories
+=======
+>>>>>>> d57ef2235b185265ebd51d10c82a85525edd2738
 
 const { BadRequestError, NotFoundError } = require("../utils/request.js");
 const { imageUpload } = require("../utils/imageHandler.js");
-const e = require("express");
 
 const getCarsService = async (manufacture) => {
   const data = await getCarsRepo(manufacture);
@@ -85,7 +87,9 @@ const createCarService = async (car, files) => {
     createCarTable.id
   );
 
-  return createCarTable;
+  const newCar = await getCarByIdRepo(createCarTable.id);
+
+  return newCar;
 };
 
 const updateCarService = async (id, car, files) => {
