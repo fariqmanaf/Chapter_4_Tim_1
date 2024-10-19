@@ -176,7 +176,9 @@ const updateCarService = async (id, car, files) => {
 
   const updateSpecsTable = await updateSpecsRepo(spec_details_id, id);
 
-  const updateCar = await getCarByIdRepo(id);
+  const updatedCar = await getCarByIdRepo(id);
+
+  return updatedCar;
 };
 
 const deleteCarService = async (id) => {
