@@ -56,21 +56,11 @@ const updateCarDetailsRepo = async (
 };
 
 const deleteCarDetailsRepo = async (cars_id) => {
-  const carDetails = await prisma.car_details.findMany({
+  const carDetails = await prisma.car_details.deleteMany({
     where: { cars_id: cars_id },
   });
-  if (!carDetails || carDetails.length === 0) {
-    return null; 
-  }
-  const deletedCarDetails = await Promise.all(
-    carDetails.map(async (detail) => {
-      return await prisma.car_details.delete({
-        where: { id: detail.id },
-      });
-    })
-  );
 
-  const serializedCarDetails = JSONBigInt.stringify(deletedCarDetails);
+  const serializedCarDetails = JSONBigInt.stringify(carDetails);
   return JSONBigInt.parse(serializedCarDetails);
 };
 

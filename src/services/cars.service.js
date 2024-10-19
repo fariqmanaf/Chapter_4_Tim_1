@@ -85,7 +85,6 @@ const createCarService = async (car, files) => {
   );
   console.log(`Availability created with ID: ${createAvailabilityTable.id}`);
 
-
   const createModelsTable = await createModelsRepo(model, type);
   console.log(`Model created with ID: ${createModelsTable.id}`);
 
@@ -95,7 +94,6 @@ const createCarService = async (car, files) => {
     createAvailabilityTable.id
   );
   console.log(`Car created with ID: ${createCarTable.id}`);
-
 
   const createCarDetailsTable = await createCarDetailsRepo(
     capacity,
@@ -191,57 +189,22 @@ const updateCarService = async (id, car, files) => {
   return existingCar;
 };
 
-const deleteCarService = async (cars_id) => {
-  console.log(`Trying to delete car with ID: ${cars_id}`);
-
-  const existingCar = await prisma.cars.findUnique({
-    where: { id: cars_id },
-    include: {
-      manufactures: true,
-      models: true,
-      availability: true,
-      car_details: true,
-      options: {
-        include: {
-          option_details: true,
-        },
-      },
-      specs: {
-        include: {
-          spec_details: true,
-        },
-      },
-    },
-  });
+const deleteCarService = async (id) => {
+  const existingCar = await getCarByIdRepo(id);
 
   if (!existingCar) {
-    console.error("Car not found");
-    throw new Error("Car not found");
+    throw new NotFoundError("Car not found");
   }
+  const deleteCarDetailsTable = await deleteCarDetailsRepo(id);
+  const deleteOptionsTable = await deleteOptionsRepo(id);
+  const deleteSpecsTable = await deleteSpecsRepo(id);
+  const deleteAvailabilityTable = await deleteAvailabilityRepo(
+    existingCar.availability_id
+  );
+  const deleteModelsTable = await deleteModelsRepo(existingCar.model_id);
+  const deleteCarTable = await deleteCarRepo(existingCar.id);
 
-  try {
-    await prisma.$transaction(
-      async (prisma) => {
-        console.log(`Deleting related data for car ID: ${existingCar.id}`);
-
-        await deleteCarDetailsRepo(existingCar.id);
-        await deleteOptionsRepo(existingCar.id);
-        await deleteSpecsRepo(existingCar.id);
-
-        await deleteCarRepo(existingCar.id);
-        console.log(`Car with ID: ${existingCar.id} deleted`);
-      },
-      {
-        maxWait: 5000,
-        timeout: 20000, 
-      }
-    );
-
-    return { message: `Car with ID: ${existingCar.id} deleted successfully` };
-  } catch (error) {
-    console.error(error);
-    throw new Error(`Error deleting car with ID: ${existingCar.id}`);
-  }
+  return { message: `Car with ID: ${existingCar.id} deleted successfully`, data: existingCar };
 };
 
 module.exports = {

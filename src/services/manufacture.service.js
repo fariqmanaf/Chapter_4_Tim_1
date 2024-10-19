@@ -42,13 +42,17 @@ exports.updateManufacture = async (id, data) => {
 
 exports.deleteManufactureById = async (id) => {
   // find Manufactures is exist or not (validate the data)
-  const existingManufactures = await ManufactureRepository.getManufactureById(id);
+  const existingManufactures = await ManufactureRepository.getManufactureById(
+    id
+  );
   if (!existingManufactures) {
     throw new NotFoundError("Manufactures is Not Found!");
   }
 
   // if exist, we will delete the Manufactures data
-  const deletedManufactures = await ManufactureRepository.deleteManufactureById(id);
+  const deletedManufactures = await ManufactureRepository.deleteManufactureById(
+    id
+  );
   if (!deletedManufactures) {
     throw new InternalServerError(["Failed to delete Manufactures!"]);
   }
