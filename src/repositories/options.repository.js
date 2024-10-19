@@ -36,9 +36,17 @@ const updateOptionsRepo = async (option_details_id, ids) => {
   return JSONBigInt.parse(serializedOptions);
 };
 
-const deleteOptionsRepo = async (id) => {
-  const deleteOptions = await prisma.options.deleteMany({
-    where: { cars_id: id },
+const deleteOptionsRepo = async (cars_id) => {
+  const option = await prisma.options.findFirst({
+    where: { cars_id: cars_id },
+  });
+
+  if (!option) {
+    throw new Error("Option not found for the given cars_id");
+  }
+
+  const deleteOptions = await prisma.options.delete({
+    where: { id: option.id },
   });
   const serializedOptions = JSONBigInt.stringify(deleteOptions);
   return JSONBigInt.parse(serializedOptions);

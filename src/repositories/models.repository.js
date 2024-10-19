@@ -35,7 +35,7 @@ exports.deleteModelsRepo = async (id) => {
   });
 
   const deletedModels = await prisma.models.delete({
-    where: { id },
+    where: { id: id },
   });
 
   const serializedModels = JSONBigInt.stringify(deletedModels);

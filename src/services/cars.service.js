@@ -31,6 +31,9 @@ const {
   deleteModelsRepo,
 } = require("../repositories/models.repository.js");
 
+const { PrismaClient } = require("@prisma/client");
+const prisma = new PrismaClient();
+
 const { BadRequestError, NotFoundError } = require("../utils/request.js");
 const { imageUpload } = require("../utils/imageHandler.js");
 const e = require("express");
@@ -80,14 +83,19 @@ const createCarService = async (car, files) => {
     availableAt,
     available
   );
+  console.log(`Availability created with ID: ${createAvailabilityTable.id}`);
+
 
   const createModelsTable = await createModelsRepo(model, type);
+  console.log(`Model created with ID: ${createModelsTable.id}`);
 
   const createCarTable = await createCarRepo(
     manufacture_id,
     createModelsTable.id,
     createAvailabilityTable.id
   );
+  console.log(`Car created with ID: ${createCarTable.id}`);
+
 
   const createCarDetailsTable = await createCarDetailsRepo(
     capacity,
@@ -98,16 +106,19 @@ const createCarService = async (car, files) => {
     image,
     createCarTable.id
   );
+  console.log(`Car details created with ID: ${createCarDetailsTable.id}`);
 
   const createOptionsTable = await createOptionsRepo(
     option_details_id,
     createCarTable.id
   );
+  console.log(`Options created with ID: ${createOptionsTable.id}`);
 
   const createSpecsTable = await createSpecsRepo(
     spec_details_id,
     createCarTable.id
   );
+  console.log(`Specs created with ID: ${createSpecsTable.id}`);
 
   const newCar = await getCarByIdRepo(createCarTable.id);
 
@@ -180,24 +191,57 @@ const updateCarService = async (id, car, files) => {
   return existingCar;
 };
 
-const deleteCarService = async (id) => {
-  const existingCar = await getCarByIdRepo(id);
+const deleteCarService = async (cars_id) => {
+  console.log(`Trying to delete car with ID: ${cars_id}`);
+
+  const existingCar = await prisma.cars.findUnique({
+    where: { id: cars_id },
+    include: {
+      manufactures: true,
+      models: true,
+      availability: true,
+      car_details: true,
+      options: {
+        include: {
+          option_details: true,
+        },
+      },
+      specs: {
+        include: {
+          spec_details: true,
+        },
+      },
+    },
+  });
 
   if (!existingCar) {
-    throw new NotFoundError("Car not found");
+    console.error("Car not found");
+    throw new Error("Car not found");
   }
 
-  const deleteCarDetailsTable = await deleteCarDetailsRepo(id);
-  const deleteOptionsTable = await deleteOptionsRepo(id);
-  const deleteSpecsTable = await deleteSpecsRepo(id);
+  try {
+    await prisma.$transaction(
+      async (prisma) => {
+        console.log(`Deleting related data for car ID: ${existingCar.id}`);
 
-  const deleteAvailabilityTable = await deleteAvailabilityRepo(
-    existingCar.availability_id
-  );
-  const deleteModelsTable = await deleteModelsRepo(existingCar.model_id);
-  const deleteCarTable = await deleteCarRepo(existingCar.id);
+        await deleteCarDetailsRepo(existingCar.id);
+        await deleteOptionsRepo(existingCar.id);
+        await deleteSpecsRepo(existingCar.id);
 
-  return existingCar;
+        await deleteCarRepo(existingCar.id);
+        console.log(`Car with ID: ${existingCar.id} deleted`);
+      },
+      {
+        maxWait: 5000,
+        timeout: 20000, 
+      }
+    );
+
+    return { message: `Car with ID: ${existingCar.id} deleted successfully` };
+  } catch (error) {
+    console.error(error);
+    throw new Error(`Error deleting car with ID: ${existingCar.id}`);
+  }
 };
 
 module.exports = {

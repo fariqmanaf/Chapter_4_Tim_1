@@ -36,10 +36,17 @@ const updateSpecsRepo = async (spec_details_id, ids) => {
   return JSONBigInt.parse(serializedSpecs);
 };
 
+const deleteSpecsRepo = async (cars_id) => {
+  const spec = await prisma.specs.findFirst({
+    where: { cars_id: cars_id },
+  });
 
-const deleteSpecsRepo = async (id) => {
-  const deletedSpec = await prisma.specs.deleteMany({
-    where: { cars_id: id },
+  if (!spec) {
+    throw new Error("Spec not found for the given cars_id");
+  }
+
+  const deletedSpec = await prisma.specs.delete({
+    where: { id: spec.id },
   });
   const serializedSpecs = JSONBigInt.stringify(deletedSpec);
   return JSONBigInt.parse(serializedSpecs);

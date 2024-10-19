@@ -90,11 +90,24 @@ const updateCarRepo = async (id, manufacture_id, model_id, availability_id) => {
 };
 
 const deleteCarRepo = async (id) => {
-  const deletedCar = await prisma.cars.delete({
-    where: { id },
+  const deletedCar = await prisma.$transaction(async (prisma) => {
+    await prisma.car_details.deleteMany({ where: { cars_id: id } });
+    await prisma.options.deleteMany({ where: { cars_id: id } });
+    await prisma.specs.deleteMany({ where: { cars_id: id } });
+
+    const deletedCar = await prisma.cars.delete({
+      where: { id: id },
+    });
+
+    await prisma.availability.deleteMany({
+      where: { id: deletedCar.availability_id },
+    });
+
+    const serializedCars = JSONBigInt.stringify(deletedCar);
+    return JSONBigInt.parse(serializedCars);
   });
-  const serializedCars = JSONBigInt.stringify(deletedCar);
-  return JSONBigInt.parse(serializedCars);
+
+  return deletedCar;
 };
 
 module.exports = {
