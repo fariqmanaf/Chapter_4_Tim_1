@@ -1,7 +1,6 @@
 const { PrismaClient } = require("@prisma/client");
 const JSONBigInt = require("json-bigint");
 const prisma = new PrismaClient();
-const JSONBigInt = require("json-bigint");
 
 const createOptionsRepo = async (option_details_id, cars_id) => {
   const newOptions = option_details_id.map(async (id) => {
@@ -25,9 +24,17 @@ const updateOptionsRepo = async (id, data) => {
   return JSONBigInt.parse(serializedOptions);
 };
 
-const deleteOptionsRepo = async (id) => {
+const deleteOptionsRepo = async (cars_id) => {
+  const option = await prisma.options.findFirst({
+    where: { cars_id: cars_id },
+  });
+
+  if (!option) {
+    throw new Error("Option not found for the given cars_id");
+  }
+
   const deleteOptions = await prisma.options.delete({
-    where: { id },
+    where: { id: option.id },
   });
   const serializedOptions = JSONBigInt.stringify(deleteOptions);
   return JSONBigInt.parse(serializedOptions);

@@ -1,7 +1,6 @@
 const { PrismaClient } = require("@prisma/client");
 const JSONBigInt = require("json-bigint");
 const prisma = new PrismaClient();
-const JSONBigInt = require("json-bigint");
 
 const createSpecsRepo = async (spec_details_id, cars_id) => {
   const newSpec = spec_details_id.map(async (id) => {
@@ -27,9 +26,17 @@ const updateSpecsRepo = async (id, spec_details_id, updateCarTable) => {
   return updatedSpec;
 };
 
-const deleteSpecsRepo = async (id) => {
+const deleteSpecsRepo = async (cars_id) => {
+  const spec = await prisma.specs.findFirst({
+    where: { cars_id: cars_id },
+  });
+
+  if (!spec) {
+    throw new Error("Spec not found for the given cars_id");
+  }
+
   const deletedSpec = await prisma.specs.delete({
-    where: { id },
+    where: { id: spec.id },
   });
   const serializedSpecs = JSONBigInt.stringify(deletedSpec);
   return JSONBigInt.parse(serializedSpecs);

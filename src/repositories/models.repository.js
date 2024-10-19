@@ -2,7 +2,6 @@ const { PrismaClient } = require("@prisma/client");
 const JSONBigInt = require("json-bigint");
 
 const prisma = new PrismaClient();
-const JSONBigInt = require("json-bigint");
 
 exports.createModelsRepo = async (model, type) => {
   const newModels = await prisma.models.create({
@@ -22,17 +21,15 @@ exports.updateModelsRepo = async (id, data) => {
     data,
   });
 
-  // Convert BigInt fields to string for safe serialization
   const serializedModels = JSONBigInt.stringify(updatedModels);
   return JSONBigInt.parse(serializedModels);
 };
 
 exports.deleteModelsRepo = async (id) => {
   const deletedModels = await prisma.models.delete({
-    where: { id },
+    where: { id: id },
   });
 
-  // Convert BigInt fields to string for safe serialization
   const serializedModels = JSONBigInt.stringify(deletedModels);
   return JSONBigInt.parse(serializedModels);
 };
