@@ -15,15 +15,25 @@ const createSpecsRepo = async (spec_details_id, cars_id) => {
   return JSONBigInt.parse(serializedSpecs);
 };
 
-const updateSpecsRepo = async (id, spec_details_id, updateCarTable) => {
-  const updatedSpec = await prisma.specs.update({
-    where: { id },
-    data : { 
-      spec_details_id,
-      updateCarTable,
-    }
+const updateSpecsRepo = async (spec_details_id, ids) => {
+  const specsTarget = await prisma.specs.findMany({
+    where: { cars_id: ids },
   });
-  return updatedSpec;
+
+  const updatedSpecs = await Promise.all(
+    spec_details_id.map(async (id, index) => {
+      return await prisma.specs.update({
+        where: { id: specsTarget[index].id },
+        data: {
+          spec_details_id: id,
+          cars_id: ids,
+        },
+      });
+    })
+  );
+
+  const serializedSpecs = JSONBigInt.stringify(updatedSpecs);
+  return JSONBigInt.parse(serializedSpecs);
 };
 
 const deleteSpecsRepo = async (cars_id) => {

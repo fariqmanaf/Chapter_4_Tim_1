@@ -76,14 +76,14 @@ const createCarRepo = async (manufacture_id, model_id, availability_id) => {
   return JSONBigInt.parse(serializedCars);
 };
 
-const updateCarRepo = async (id, manufacture_id, updateModelsTable, updateAvailabilityTable) => {
+const updateCarRepo = async (id, manufacture_id, model_id, availability_id) => {
   const updatedCar = await prisma.cars.update({
     where: { id },
     data: {
       manufacture_id,
-      updateModelsTable,
-      updateAvailabilityTable
-    }
+      model_id,
+      availability_id,
+    },
   });
   const serializedCars = JSONBigInt.stringify(updatedCar);
   return JSONBigInt.parse(serializedCars);

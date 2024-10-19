@@ -15,11 +15,23 @@ const createOptionsRepo = async (option_details_id, cars_id) => {
   return JSONBigInt.parse(serializedOptions);
 };
 
-const updateOptionsRepo = async (id, data) => {
-  const updatedOptions = await prisma.options.update({
-    where: { id },
-    data,
+const updateOptionsRepo = async (option_details_id, ids) => {
+  const carOptions = await prisma.options.findMany({
+    where: { cars_id: ids },
   });
+
+  const updatedOptions = await Promise.all(
+    option_details_id.map(async (optionDetailId, index) => {
+      return await prisma.options.update({
+        where: { id: carOptions[index].id },
+        data: {
+          option_details_id: optionDetailId,
+          cars_id: ids,
+        },
+      });
+    })
+  );
+
   const serializedOptions = JSONBigInt.stringify(updatedOptions);
   return JSONBigInt.parse(serializedOptions);
 };
