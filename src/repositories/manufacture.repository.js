@@ -6,33 +6,27 @@ const prisma = new PrismaClient();
 exports.getManufactures = async (name) => {
   const filters = {};
 
-  // Tambahkan filter untuk Manufacture jika disediakan
   if (name) {
     filters.name = {
       contains: name,
       mode: "insensitive",
     };
   }
-
-  // Lakukan query ke database dengan filter yang ada
   const searchedManufacture = await prisma.manufactures.findMany({
     where: filters,
   });
 
-  // Convert BigInt fields to string for safe serialization
   const serializedManufactures = JSONBigInt.stringify(searchedManufacture);
   return JSONBigInt.parse(serializedManufactures);
 };
 
 exports.getManufactureById = async (id) => {
-  // find student by id
   const Manufactures = await prisma.manufactures.findFirst({
     where: {
       id: id,
     },
   });
 
-  // Convert BigInt fields to string for safe serialization
   const serializedManufactures = JSONBigInt.stringify(Manufactures);
   return JSONBigInt.parse(serializedManufactures);
 };
@@ -54,7 +48,6 @@ exports.updateManufacture = async (id, data) => {
     data,
   });
 
-  // Convert BigInt fields to string for safe serialization
   const serializedManufactures = JSONBigInt.stringify(updatedManufactures);
   return JSONBigInt.parse(serializedManufactures);
 };
@@ -64,7 +57,6 @@ exports.deleteManufactureById = async (id) => {
     where: { id },
   });
 
-  // Convert BigInt fields to string for safe serialization
   const serializedManufactures = JSONBigInt.stringify(deletedManufactures);
   return JSONBigInt.parse(serializedManufactures);
 };

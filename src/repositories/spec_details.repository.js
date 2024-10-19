@@ -17,7 +17,6 @@ const getSpecsRepo = async (spec) => {
     where: filters,
   });
 
-  // Convert BigInt fields to string for safe serialization
   const serializedSpecs = JSONBigInt.stringify(searchedSpec);
   return JSONBigInt.parse(serializedSpecs);
 };
@@ -46,7 +45,7 @@ const createSpecsRepo = async (spec) => {
 const updateSpecsRepo = async (id, spec) => {
   const updatedSpecs = await prisma.spec_details.update({
     where: { id },
-    data: {spec,},
+    data: { spec },
   });
 
   const serializedSpecs = JSONBigInt.stringify(updatedSpecs);

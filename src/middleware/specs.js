@@ -3,14 +3,14 @@ const { BadRequestError } = require("../utils/request");
 
 const validateGetSpecs = async (req, res, next) => {
   const validateQuery = z.object({
-    spec: z.string().optional(),  
+    spec: z.string().optional(),
   });
 
   const resultValidateQuery = validateQuery.safeParse(req.query);
   if (!resultValidateQuery.success) {
-    return next(new BadRequestError(resultValidateQuery.error.errors)); 
+    return next(new BadRequestError(resultValidateQuery.error.errors));
   }
-  next(); 
+  next();
 };
 
 const validateGetSpecsById = async (req, res, next) => {
@@ -27,9 +27,6 @@ const validateGetSpecsById = async (req, res, next) => {
 };
 
 const validateCreateSpecs = async (req, res, next) => {
-  // req.body = {
-  //   ...req.body,
-  // };
   const validateBody = z.object({
     spec: z.string(),
   });
