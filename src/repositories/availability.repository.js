@@ -12,7 +12,6 @@ const createAvailabilityRepo = async (rentPerDay, availableAt, available) => {
     },
   });
   const serializedAvailability = JSONBigInt.stringify(newAvailability);
-  console.log(`New availability created: ${serializedAvailability}`);
 
   return JSONBigInt.parse(serializedAvailability);
 };

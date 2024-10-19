@@ -31,12 +31,8 @@ const {
   deleteModelsRepo,
 } = require("../repositories/models.repository.js");
 
-const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
-
 const { BadRequestError, NotFoundError } = require("../utils/request.js");
 const { imageUpload } = require("../utils/imageHandler.js");
-const e = require("express");
 
 const getCarsService = async (manufacture) => {
   const data = await getCarsRepo(manufacture);
@@ -83,17 +79,14 @@ const createCarService = async (car, files) => {
     availableAt,
     available
   );
-  console.log(`Availability created with ID: ${createAvailabilityTable.id}`);
 
   const createModelsTable = await createModelsRepo(model, type);
-  console.log(`Model created with ID: ${createModelsTable.id}`);
 
   const createCarTable = await createCarRepo(
     manufacture_id,
     createModelsTable.id,
     createAvailabilityTable.id
   );
-  console.log(`Car created with ID: ${createCarTable.id}`);
 
   const createCarDetailsTable = await createCarDetailsRepo(
     capacity,
@@ -104,19 +97,16 @@ const createCarService = async (car, files) => {
     image,
     createCarTable.id
   );
-  console.log(`Car details created with ID: ${createCarDetailsTable.id}`);
 
   const createOptionsTable = await createOptionsRepo(
     option_details_id,
     createCarTable.id
   );
-  console.log(`Options created with ID: ${createOptionsTable.id}`);
 
   const createSpecsTable = await createSpecsRepo(
     spec_details_id,
     createCarTable.id
   );
-  console.log(`Specs created with ID: ${createSpecsTable.id}`);
 
   const newCar = await getCarByIdRepo(createCarTable.id);
 
@@ -186,7 +176,7 @@ const updateCarService = async (id, car, files) => {
 
   const updateSpecsTable = await updateSpecsRepo(spec_details_id, id);
 
-  return existingCar;
+  const updateCar = await getCarByIdRepo(id);
 };
 
 const deleteCarService = async (id) => {
@@ -204,7 +194,10 @@ const deleteCarService = async (id) => {
   const deleteModelsTable = await deleteModelsRepo(existingCar.model_id);
   const deleteCarTable = await deleteCarRepo(existingCar.id);
 
-  return { message: `Car with ID: ${existingCar.id} deleted successfully`, data: existingCar };
+  return {
+    message: `Car with ID: ${existingCar.id} deleted successfully`,
+    data: existingCar,
+  };
 };
 
 module.exports = {
